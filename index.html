@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國小數學數位互動學習館｜首頁</title>
+  <style>
+    :root {
+      --ink: #1e293b;
+      --muted: #64748b;
+      --bg: #f8faff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(203, 213, 225, 0.65);
+      --primary: #4f7cff;
+      --primary-hover: #3b66f5;
+      --primary-light: #eef3ff;
+      --green: #10b981;
+      --green-light: #ecfdf5;
+      --orange: #f59e0b;
+      --orange-light: #fffbeb;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --shadow-sm: 0 4px 14px rgba(30, 41, 59, 0.05);
+      --shadow: 0 16px 38px rgba(30, 41, 59, 0.08);
+      --shadow-lg: 0 24px 50px rgba(30, 41, 59, 0.12);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 8%, #eaf0ff 0%, transparent 26%),
+        radial-gradient(circle at 90% 12%, #fff3e2 0%, transparent 24%),
+        radial-gradient(circle at 50% 90%, #f3f0ff 0%, transparent 32%),
+        var(--bg);
+      min-height: 100vh;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+      flex: 1;
+    }
+
+    /* Top Hero & Header */
+    header {
+      text-align: center;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 18px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.12);
+      font-weight: 800;
+      color: var(--purple);
+      font-size: 14px;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    /* QR Code Card in Top Area */
+    .qr-hero-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 14px 22px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .qr-hero-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+    .qr-img-wrap {
+      width: 86px;
+      height: 86px;
+      border-radius: 12px;
+      background: #f8fafc;
+      padding: 6px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .qr-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .qr-info {
+      text-align: left;
+    }
+    .qr-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .qr-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 4.5vw, 46px);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #0f172a 20%, #4f7cff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 680px;
+      margin: 0 auto;
+      font-weight: 500;
+    }
+
+    /* Course Grid */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+
+    .course-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .course-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: #cbd5e1;
+      transition: background 0.3s;
+    }
+
+    .course-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(79, 124, 255, 0.4);
+    }
+
+    /* Card 1: 擴分與約分 Specifics */
+    .card-fraction::before {
+      background: linear-gradient(90deg, #4f7cff, #21b573);
+    }
+    .card-fraction:hover {
+      border-color: rgba(79, 124, 255, 0.5);
+    }
+
+    /* Card 2: 展開圖 Specifics */
+    .card-geometry::before {
+      background: linear-gradient(90deg, #f59e0b, #8b5cf6);
+    }
+    .card-geometry:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .grade-chip {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chip-grade5 {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .chip-grade6 {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    .card-icon {
+      font-size: 42px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    /* Feature tags */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 26px;
+    }
+    .tag {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    /* Action button inside card */
+    .card-btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .btn-fraction {
+      background: linear-gradient(135deg, #4f7cff 0%, #3864f1 100%);
+      box-shadow: 0 6px 18px rgba(79, 124, 255, 0.3);
+    }
+    .btn-fraction:hover {
+      box-shadow: 0 8px 22px rgba(79, 124, 255, 0.45);
+      filter: brightness(1.05);
+    }
+
+    .btn-geometry {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.3);
+    }
+    .btn-geometry:hover {
+      box-shadow: 0 8px 22px rgba(139, 92, 246, 0.45);
+      filter: brightness(1.05);
+    }
+
+    /* Feature Highlights Section */
+    .features-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .feature-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .feature-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .feature-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 24px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 20px 16px 40px;
+      }
+      .course-grid {
+        grid-template-columns: 1fr;
+      }
+      .qr-hero-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 16px;
+      }
+      .qr-info {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-top">🌟 國小數學高年級數位互動學習館</div>
+
+      <!-- Top QR Code Display Card -->
+      <div class="qr-hero-card">
+        <div class="qr-img-wrap">
+          <img src="qrcode.png" alt="教材 QR Code">
+        </div>
+        <div class="qr-info">
+          <div class="qr-title">📲 手機 / 平板 掃描立即體驗</div>
+          <div class="qr-desc">掃描 QR Code 隨身自主學習，支援觸控操作與大屏智慧白板</div>
+        </div>
+      </div>
+
+      <h1>小學數學互動探索樂園</h1>
+      <p class="subtitle">動手操作、眼見為憑！透過直觀的互動模擬與 3D 空間動畫，讓抽象的分數與立體幾何變得簡單又好玩！</p>
+    </header>
+
+    <!-- Main Course Selection Grid -->
+    <main class="course-grid">
+      <!-- Card 1: 擴分與約分 (a1.html) -->
+      <a href="a1.html" class="course-card card-fraction">
+        <div>
+          <div class="card-header">
+            <span class="grade-chip chip-grade5">🎒 國小五年級單元</span>
+            <span class="card-icon">🍕</span>
+          </div>
+          <h2 class="card-title">擴分與約分</h2>
+          <p class="card-desc">動手拉動滑桿切換乘數，即時觀察分數「切得更細、值卻不變」的視覺奧秘！雙模式一鍵切換，扎實建立等值分數的核心概念。</p>
+          <div class="tag-list">
+            <span class="tag">🔵 擴分放大細分</span>
+            <span class="tag">🟢 約分化簡</span>
+            <span class="tag">💡 等分方塊視覺化</span>
+            <span class="tag">📝 逐步算式指引</span>
+          </div>
+        </div>
+        <div class="card-btn btn-fraction">
+          進入「擴分與約分」互動教學 ➔
+        </div>
+      </a>
+
+      <!-- Card 2: 展開圖 (a2.html) -->
+      <a href="a2.html" class="course-card card-geometry">
+        <div>
+          <div class="card-header">
+            <span class="grade-chip chip-grade6">🎒 國小六年級單元</span>
+            <span class="card-icon">🎲</span>
+          </div>
+          <h2 class="card-title">立體圖與展開圖 3D</h2>
+          <p class="card-desc">拖曳拉桿親眼見證平面展開圖神奇折合成立體！涵蓋柱體與錐體 9 種形體、360° 自由旋轉視角、底面與側面色彩標記，以及隨堂闖關小測驗。</p>
+          <div class="tag-list">
+            <span class="tag">🔄 0%~100% 摺疊動畫</span>
+            <span class="tag">📦 正方體11種展開圖</span>
+            <span class="tag">🥫 圓柱長方形捲曲</span>
+            <span class="tag">🏆 隨堂趣味測驗</span>
+          </div>
+        </div>
+        <div class="card-btn btn-geometry">
+          進入「3D 展開圖」互動實驗室 ➔
+        </div>
+      </a>
+    </main>
+
+    <!-- Highlights Banner -->
+    <section class="features-card">
+      <div class="feature-item">
+        <div class="feature-icon-wrap">🎮</div>
+        <div>
+          <div class="feature-title">動手探究式學習</div>
+          <div class="feature-desc">拉桿操作即時反應，告別死記硬背，在動態變換中發現幾何與數的規律。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon-wrap">📐</div>
+        <div>
+          <div class="feature-title">貼合新課綱教材</div>
+          <div class="feature-desc">依據十二年國教高年級數學領域精心編制，涵蓋等值分數與柱錐體關鍵概念。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon-wrap">💻</div>
+        <div>
+          <div class="feature-title">跨載具隨開即用</div>
+          <div class="feature-desc">單一 HTML 輕量極速載入，相容桌上型電腦、筆電、iPad 平板與班級電子白板。</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    國小高年級數學數位教材 ｜ 支援擴分約分與 3D 立體展開圖探索 ｜ 點擊卡片或掃描上方 QR Code 開啟學習
+  </footer>
+</body>
+</html>
