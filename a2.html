@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國小六年級數學｜立體圖與展開圖 3D 動畫互動實驗室</title>
+  <style>
+    :root {
+      --ink: #1e293b;
+      --muted: #64748b;
+      --light-muted: #94a3b8;
+      --bg: #f8faff;
+      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-border: rgba(203, 213, 225, 0.6);
+      --primary: #4f7cff;
+      --primary-hover: #3b66f5;
+      --primary-light: #eef3ff;
+      --blue2: #dce7ff;
+      --green: #10b981;
+      --green-light: #ecfdf5;
+      --orange: #f59e0b;
+      --orange-light: #fffbeb;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
+      --rose: #f43f5e;
+      --shadow-sm: 0 4px 12px rgba(30, 41, 59, 0.05);
+      --shadow: 0 16px 36px rgba(30, 41, 59, 0.09);
+      --shadow-lg: 0 24px 50px rgba(30, 41, 59, 0.13);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 5% 5%, #e9f0ff 0%, transparent 25%),
+        radial-gradient(circle at 95% 10%, #fff2e0 0%, transparent 22%),
+        radial-gradient(circle at 50% 95%, #f1f5f9 0%, transparent 35%),
+        var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .app {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+    }
+
+    /* Header styling */
+    header {
+      text-align: center;
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.12);
+      font-weight: 800;
+      color: var(--purple);
+      font-size: 14px;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #1e293b 30%, #4f7cff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 680px;
+      margin: 0 auto;
+      font-weight: 500;
+    }
+
+    /* Sound and Help Bar */
+    .top-toolbar {
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    .icon-btn:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+    }
+
+    /* Shape Categories & Selection */
+    .nav-section {
+      margin-bottom: 22px;
+    }
+
+    .category-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .category-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .shape-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .group-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      white-space: nowrap;
+      margin-left: 4px;
+    }
+    .toolbar-divider {
+      width: 1px;
+      height: 26px;
+      background: #cbd5e1;
+      margin: 0 8px;
+      flex-shrink: 0;
+    }
+    .shape-pills::-webkit-scrollbar {
+      height: 4px;
+    }
+    .shape-pills::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .pill-btn {
+      flex: 0 0 auto;
+      border: 1px solid rgba(203, 213, 225, 0.7);
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .pill-btn:hover {
+      border-color: var(--primary);
+      background: #f8faff;
+      transform: translateY(-1px);
+    }
+    .pill-btn.active {
+      background: linear-gradient(135deg, var(--primary) 0%, #3a68ea 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 6px 18px rgba(79, 124, 255, 0.35);
+      transform: translateY(-2px);
+    }
+
+    /* Main Workspace Layout */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    /* Card standard */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      position: relative;
+    }
+
+    /* 3D Stage Area */
+    .stage-card {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+      background: #ffffff;
+    }
+
+    .stage-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 5;
+    }
+
+    .stage-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .shape-icon-tag {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .stage-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--green-light);
+      color: var(--green);
+    }
+    .status-badge.folding {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+
+    .canvas-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #f9fbff 0%, #edf2f9 100%);
+      touch-action: none;
+    }
+
+    #webgl-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* On-canvas floating overlays */
+    .overlay-controls {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .overlay-btn-group {
+      display: flex;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    .overlay-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+    .overlay-btn:hover {
+      background: #f1f5f9;
+    }
+    .overlay-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .overlay-btn:not(:last-child) {
+      border-right: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .canvas-hint {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      border: 1px solid rgba(203, 213, 225, 0.6);
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .canvas-view-cube {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .view-chip {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+    .view-chip:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Right Column: Interaction & Knowledge */
+    .control-card {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Tab switcher for right panel */
+    .tab-nav {
+      display: flex;
+      gap: 6px;
+      background: #eef2f8;
+      padding: 5px;
+      border-radius: 16px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--muted);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    /* Tab 1: Folding Controls */
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* Big Slider Module */
+    .fold-slider-box {
+      background: #f8fafc;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-label {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slider-percent {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--primary);
+      font-family: monospace, sans-serif;
+      background: var(--primary-light);
+      padding: 2px 10px;
+      border-radius: 8px;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 12px;
+      border-radius: 8px;
+      background: linear-gradient(to right, #4f7cff var(--progress, 0%), #cbd5e1 var(--progress, 0%));
+      outline: none;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 4px solid var(--primary);
+      box-shadow: 0 4px 10px rgba(79, 124, 255, 0.4);
+      cursor: grab;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type="range"]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.22);
+    }
+
+    .slider-markers {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-top: -4px;
+    }
+
+    /* Action Buttons Row */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #3864f1 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(79, 124, 255, 0.28);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 8px 22px rgba(79, 124, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-auto-play {
+      grid-column: 1 / -1;
+      padding: 15px;
+      font-size: 16px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.28);
+    }
+    .btn-auto-play.playing {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Speed Control Chips */
+    .speed-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 4px;
+    }
+    .speed-chips {
+      display: flex;
+      gap: 6px;
+    }
+    .speed-chip {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .speed-chip.active {
+      background: var(--purple-light);
+      color: var(--purple);
+      border-color: var(--purple);
+    }
+
+    /* Step buttons */
+    .step-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn-step {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-step:hover {
+      background: #f8fafc;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Color Legend Card */
+    .legend-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .legend-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-items {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .color-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 2px solid rgba(0,0,0,0.1);
+    }
+    .swatch-base { background: #ffbe76; }
+    .swatch-side { background: #70a1ff; }
+
+    /* Tab 2: Geometric Properties / Formulas */
+    .props-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .prop-stat {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+    .prop-stat-num {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+    .prop-stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .info-list {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .info-row span:first-child {
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .info-row span:last-child {
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .formula-banner {
+      background: linear-gradient(135deg, #eef3ff 0%, #f5f3ff 100%);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .formula-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--purple);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .formula-math {
+      font-size: 18px;
+      font-weight: 900;
+      color: #1e1b4b;
+      background: #ffffff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+    }
+    .formula-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Tab 3: Interactive Quiz */
+    .quiz-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quiz-badge {
+      background: #fff0f5;
+      color: #e11d48;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(225, 29, 72, 0.2);
+    }
+    .quiz-score {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .quiz-question {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.6;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .quiz-opt-btn {
+      text-align: left;
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .quiz-opt-btn:hover:not(:disabled) {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: translateX(3px);
+    }
+    .quiz-opt-btn.correct {
+      background: #ecfdf5 !important;
+      border-color: #10b981 !important;
+      color: #065f46 !important;
+    }
+    .quiz-opt-btn.wrong {
+      background: #fff1f2 !important;
+      border-color: #f43f5e !important;
+      color: #9f1239 !important;
+    }
+
+    .quiz-feedback {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 600;
+      animation: popFeedback 0.3s ease;
+    }
+    @keyframes popFeedback {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .quiz-feedback.show {
+      display: block;
+    }
+    .quiz-feedback.success {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .quiz-feedback.fail {
+      background: #fff1f2;
+      color: #9f1239;
+      border: 1px solid #fecdd3;
+    }
+
+    .quiz-next-btn {
+      display: none;
+      align-self: flex-end;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .quiz-next-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Confetti Canvas for Quiz Success */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 980px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .stage-card {
+        height: 500px;
+      }
+      .top-toolbar {
+        position: static;
+        justify-content: center;
+        margin-top: 10px;
+      }
+    }
+    @media (max-width: 600px) {
+      .app {
+        padding: 16px 12px 36px;
+      }
+      .stage-card {
+        height: 420px;
+      }
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+      .props-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- OrbitControls CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app">
+    <header>
+      <div class="badge">🎒 國小六年級數學領域｜空間與立體形體</div>
+      <h1>立體圖與展開圖 3D 動畫互動實驗室</h1>
+      <p class="subtitle">動手拖動滑桿，觀察平面展開圖如何神奇折合成立體！深入理解底面、側面、頂點與邊的空間奧秘。</p>
+
+      <div class="top-toolbar">
+        <a href="index.html" class="icon-btn" style="text-decoration:none;">🏠 回首頁</a>
+        <button class="icon-btn" id="soundToggleBtn">🔊 音效: 開</button>
+        <button class="icon-btn" id="resetCamBtn">🔄 重設視角</button>
+      </div>
+    </header>
+
+    <!-- Shape Selection Section (Unified Toolbar) -->
+    <section class="nav-section">
+      <div class="category-group">
+        <div class="shape-pills" id="unifiedShapePills">
+          <span class="group-label">📦 柱體家族：</span>
+          <button class="pill-btn active" data-shape="cube_cross">🎲 正方體 (1-4-1 十字)</button>
+          <button class="pill-btn" data-shape="cube_stair">🪜 正方體 (2-2-2 階梯)</button>
+          <button class="pill-btn" data-shape="cube_231">🧩 正方體 (2-3-1 型)</button>
+          <button class="pill-btn" data-shape="cuboid">🏢 長方體 (四角柱)</button>
+          <button class="pill-btn" data-shape="tri_prism">⛺ 三角柱</button>
+          <button class="pill-btn" data-shape="cylinder">🥫 圓柱 (捲曲展開)</button>
+
+          <span class="toolbar-divider"></span>
+
+          <span class="group-label">🔺 錐體家族：</span>
+          <button class="pill-btn" data-shape="square_pyramid">🏛️ 四角錐 (金字塔)</button>
+          <button class="pill-btn" data-shape="tri_pyramid">📐 三角錐 (正四面體)</button>
+          <button class="pill-btn" data-shape="cone">🍦 圓錐 (扇形展開)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main 3D and Controller Workspace -->
+    <main class="workspace">
+      <!-- Left: 3D Animation Stage -->
+      <section class="card stage-card">
+        <div class="stage-header">
+          <div class="stage-title-wrap">
+            <div class="shape-icon-tag" id="currentShapeIcon">🎲</div>
+            <div>
+              <div class="stage-title" id="currentShapeName">正方體 (1-4-1 十字展開圖)</div>
+              <div class="status-badge" id="currentStatusBadge">展開圖 (100% 攤平)</div>
+            </div>
+          </div>
+
+          <!-- Feature Toggles -->
+          <div class="overlay-btn-group">
+            <button class="overlay-btn active" id="toggleLabelsBtn" title="顯示各面名稱">🏷️ 面名稱</button>
+            <button class="overlay-btn" id="toggleXrayBtn" title="透視穿透模式">🩻 透視</button>
+            <button class="overlay-btn active" id="toggleEdgesBtn" title="凸顯邊線與頂點">✨ 頂點與邊</button>
+          </div>
+        </div>
+
+        <div class="canvas-container" id="canvasContainer">
+          <canvas id="webgl-canvas"></canvas>
+
+          <div class="canvas-hint">
+            <span>🖱️ 滑鼠左鍵拖曳 360° 旋轉視角 ｜ 滾輪縮放視角 ｜ 觸控滑動</span>
+          </div>
+
+          <div class="canvas-view-cube">
+            <button class="view-chip" id="viewPerspective">3D 透視</button>
+            <button class="view-chip" id="viewTop">俯視 (展開圖)</button>
+            <button class="view-chip" id="viewFront">正視圖</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Interactive Controller & Knowledge -->
+      <aside class="card control-card">
+        <nav class="tab-nav">
+          <button class="tab-btn active" data-tab="tab-control">🎮 折疊操作</button>
+          <button class="tab-btn" data-tab="tab-props">📐 幾何特徵</button>
+          <button class="tab-btn" data-tab="tab-quiz">🏆 小試身手</button>
+        </nav>
+
+        <!-- Tab 1: Folding Controls -->
+        <div class="tab-content active" id="tab-control">
+          <!-- Fold progress slider -->
+          <div class="fold-slider-box">
+            <div class="slider-header">
+              <span class="slider-label">
+                <span>🔄 折疊進度控制</span>
+              </span>
+              <span class="slider-percent" id="foldPercentDisplay">0%</span>
+            </div>
+
+            <div class="slider-wrapper">
+              <input type="range" id="foldSlider" min="0" max="100" value="0" step="0.5">
+            </div>
+
+            <div class="slider-markers">
+              <span>📄 完全展開 (0%)</span>
+              <span>折疊中...</span>
+              <span>📦 完全閉合 (100%)</span>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <button class="btn btn-auto-play" id="autoPlayBtn">
+            <span id="playIcon">▶</span> <span id="playText">自動播放折疊動畫</span>
+          </button>
+
+          <div class="action-grid">
+            <button class="btn btn-secondary" id="unfoldAllBtn">⏪ 一鍵完全攤平</button>
+            <button class="btn btn-primary" id="foldAllBtn">⏩ 一鍵折成立體</button>
+          </div>
+
+          <!-- Step By Step & Speed -->
+          <div class="step-controls">
+            <button class="btn-step" id="prevStepBtn">◀ 逐步展開 (-25%)</button>
+            <button class="btn-step" id="nextStepBtn">逐步折合 (+25%) ▶</button>
+          </div>
+
+          <div class="speed-row">
+            <span>動畫速度調節：</span>
+            <div class="speed-chips">
+              <button class="speed-chip" data-speed="0.5">0.5x 慢速</button>
+              <button class="speed-chip active" data-speed="1.0">1.0x 正常</button>
+              <button class="speed-chip" data-speed="2.0">2.0x 快速</button>
+            </div>
+          </div>
+
+          <!-- Color & Component Legend -->
+          <div class="legend-box">
+            <div class="legend-title">🎨 面顏色分類說明 (小六核心考點)</div>
+            <div class="legend-items">
+              <div class="legend-item">
+                <div class="color-swatch swatch-base"></div>
+                <span><strong>底面 (Base)</strong>：主要基準面</span>
+              </div>
+              <div class="legend-item">
+                <div class="color-swatch swatch-side"></div>
+                <span><strong>側面 (Side)</strong>：圍繞柱體/錐體</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Geometric Properties & Euler Formula -->
+        <div class="tab-content" id="tab-props">
+          <div class="props-grid">
+            <div class="prop-stat">
+              <div class="prop-stat-num" id="statFaces">6</div>
+              <div class="prop-stat-label">面數 (Faces)</div>
+            </div>
+            <div class="prop-stat">
+              <div class="prop-stat-num" id="statVertices">8</div>
+              <div class="prop-stat-label">頂點數 (Vertices)</div>
+            </div>
+            <div class="prop-stat">
+              <div class="prop-stat-num" id="statEdges">12</div>
+              <div class="prop-stat-label">邊數 (Edges)</div>
+            </div>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>底面形狀</span>
+              <span id="infoBaseShape">正方形 (2 個全等底面)</span>
+            </div>
+            <div class="info-row">
+              <span>側面形狀</span>
+              <span id="infoSideShape">正方形 (4 個全等側面)</span>
+            </div>
+            <div class="info-row">
+              <span>展開圖特徵</span>
+              <span id="infoNetType">1-4-1 經典十字型展開圖</span>
+            </div>
+            <div class="info-row">
+              <span>尤拉公式驗證</span>
+              <span id="infoEuler">V - E + F = 8 - 12 + 6 = 2 (成立!)</span>
+            </div>
+          </div>
+
+          <div class="formula-banner">
+            <div class="formula-title">💡 小六幾何記憶口訣大補帖</div>
+            <div class="formula-math" id="formulaMnemonic">柱體邊數 ＝ 底面邊數 × 3</div>
+            <div class="formula-desc" id="formulaExplanation">
+              <strong>柱體規律：</strong>頂點數 ＝ 底面邊數 × 2；邊數 ＝ 底面邊數 × 3；面數 ＝ 底面邊數 ＋ 2。<br>
+              <strong>錐體規律：</strong>頂點數 ＝ 底面邊數 ＋ 1；邊數 ＝ 底面邊數 × 2；面數 ＝ 底面邊數 ＋ 1。
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Interactive Quiz -->
+        <div class="tab-content" id="tab-quiz">
+          <div class="quiz-card">
+            <div class="quiz-header">
+              <span class="quiz-badge" id="quizCategoryBadge">正方體小考驗</span>
+              <span class="quiz-score" id="quizScoreDisplay">答對：0 題</span>
+            </div>
+
+            <div class="quiz-question" id="quizQuestionText">
+              題目加載中...
+            </div>
+
+            <div class="quiz-options" id="quizOptionsContainer">
+              <!-- Options inserted dynamically -->
+            </div>
+
+            <div class="quiz-feedback" id="quizFeedbackBox"></div>
+            <button class="quiz-next-btn" id="quizNextBtn">下一題 ▶</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      國小六年級數學 3D 空間幾何教材 ｜ 支援桌機、平板與觸控操作 ｜ 完美符合十二年國教數學領域課綱
+    </footer>
+  </div>
+
+  <script>
+    /* =========================================================
+       1. Global State & Educational Database
+       ========================================================= */
+    const STATE = {
+      shape: 'cube_cross',
+      t: 0.0, // Fold parameter: 0.0 = completely flat net, 1.0 = completely closed solid
+      isAutoPlaying: false,
+      autoPlayDirection: 1, // 1: folding, -1: unfolding
+      playSpeed: 1.0,
+      showLabels: true,
+      xrayMode: false,
+      showEdges: true,
+      soundEnabled: true,
+      quizScore: 0,
+      currentQuizIndex: 0
+    };
+
+    // Database of shapes, properties, and Grade 6 curriculum explanations
+    const SHAPE_CONFIGS = {
+      cube_cross: {
+        name: '正方體 (1-4-1 十字型)',
+        icon: '🎲',
+        category: 'prism',
+        faces: 6, vertices: 8, edges: 12,
+        baseShape: '正方形 (2 個全等底面)',
+        sideShape: '正方形 (4 個全等側面)',
+        netType: '1-4-1 十字型展開圖 (最常見經典型)',
+        euler: '8 - 12 + 6 = 2 (符合多面體尤拉公式)',
+        mnemonic: '正方體 11 種展開圖中，1-4-1 最常見！',
+        desc: '上、下各一個正方形，中間連成 4 個正方形，折起來剛好封頂封底！',
+        quizzes: [
+          {
+            q: '在 1-4-1 展開圖中，黃色的「底面 1」折合成正方體後，哪一面會是它的「相對面」？',
+            opts: ['頂面 6 (正確對立平行)', '側面 2', '側面 4'],
+            answer: 0,
+            explain: '「側面 2」折起垂直立起後，「頂面 6」再往前折 90 度剛好蓋在頂部，與底面 1 平行相對！'
+          },
+          {
+            q: '正方體一共有幾個頂點、幾條邊、幾個面？',
+            opts: ['8 個頂點、12 條邊、6 個面', '6 個頂點、12 條邊、8 個面', '8 個頂點、8 條邊、6 個面'],
+            answer: 0,
+            explain: '正方體有 6 個面、12 條邊、8 個頂點，邊長全部相等。'
+          },
+          {
+            q: '正方體的展開圖一共有幾種不同的形式？',
+            opts: ['11 種', '8 種', '14 種'],
+            answer: 0,
+            explain: '小六數學課綱名題：正方體的展開圖共有 11 種（包含 1-4-1型、2-3-1型、2-2-2型與 3-3型）！'
+          }
+        ]
+      },
+      cube_stair: {
+        name: '正方體 (2-2-2 階梯型)',
+        icon: '🪜',
+        category: 'prism',
+        faces: 6, vertices: 8, edges: 12,
+        baseShape: '正方形 (2 個底面)',
+        sideShape: '正方形 (4 個側面)',
+        netType: '2-2-2 階梯狀展開圖',
+        euler: '8 - 12 + 6 = 2 (成立)',
+        mnemonic: '二二二階梯型，折合完全不衝突！',
+        desc: '每排 2 個正方形，呈三階梯排列，是 11 種展開圖中極富特色的形式！',
+        quizzes: [
+          {
+            q: '這種三層階梯狀的「2-2-2」圖形，真的可以折成封閉的正方體嗎？',
+            opts: ['可以！各面巧妙閉合不重疊', '不行，會有兩個面重疊在一起', '不行，會缺一個面'],
+            answer: 0,
+            explain: '拉動滑桿親自驗證！2-2-2 階梯型是正方體 11 種展開圖中唯一的一種三階梯形式，完全可以組成正方體！'
+          },
+          {
+            q: '展開圖中如果出現「田」字形或「凹」字形，能不能折成正方體？',
+            opts: ['絕對不行，一定會重疊或缺面', '可以，只要面積夠大就行', '有時候可以'],
+            answer: 0,
+            explain: '考試大口訣：「田字、凹字不能折」！凡是有田字或凹字結構的六聯方塊，折疊時必定會有面互相重疊！'
+          }
+        ]
+      },
+      cube_231: {
+        name: '正方體 (2-3-1 型)',
+        icon: '🧩',
+        category: 'prism',
+        faces: 6, vertices: 8, edges: 12,
+        baseShape: '正方形',
+        sideShape: '正方形',
+        netType: '2-3-1 錯落展開圖',
+        euler: '8 - 12 + 6 = 2 (成立)',
+        mnemonic: '二三一型共有 3 種變化！',
+        desc: '第一排 2 個、第二排 3 個、第三排 1 個，折起時各面自然合攏成箱！',
+        quizzes: [
+          {
+            q: '2-3-1 展開圖中，中間一排有 3 個正方形，折合後它們會形成正方體的什麼？',
+            opts: ['連續包圍的三個相鄰面', '兩個相對面和一個底面', '三個都重疊在一起'],
+            answer: 0,
+            explain: '中間相連的 3 個面折合時會依序相鄰豎起，形成正方體側面與前後面的連續包圍！'
+          }
+        ]
+      },
+      cuboid: {
+        name: '長方體 (四角柱)',
+        icon: '🏢',
+        category: 'prism',
+        faces: 6, vertices: 8, edges: 12,
+        baseShape: '長方形 (相對面相等且平行)',
+        sideShape: '長方形 (4 個側面)',
+        netType: '長方形展開圖 (3 組全等相對面)',
+        euler: '8 - 12 + 6 = 2 (四角柱尤拉公式)',
+        mnemonic: '長方體有 3 組互相平行的相對面！',
+        desc: '長方體的相對面大小形狀完全相同（全等），相鄰兩面互相垂直。',
+        quizzes: [
+          {
+            q: '長方體中，相對的兩個面有什麼幾何特性？',
+            opts: ['大小完全相同且互相平行', '互相垂直且大小不同', '形狀相同但大小不同'],
+            answer: 0,
+            explain: '長方體共有 3 組相對的面，每組相對的面面積相等、形狀全等且互相平行！'
+          },
+          {
+            q: '長方體和正方體相比，頂點數和邊數如何？',
+            opts: ['兩者頂點數與邊數完全相同 (8頂點, 12邊)', '長方體邊數比較多', '長方體頂點數比較多'],
+            answer: 0,
+            explain: '長方體和正方體在本質上都是「四角柱」，因此都有 6 個面、8 個頂點和 12 條邊！'
+          }
+        ]
+      },
+      tri_prism: {
+        name: '三角柱',
+        icon: '⛺',
+        category: 'prism',
+        faces: 5, vertices: 6, edges: 9,
+        baseShape: '正三角形 (2 個全等底面)',
+        sideShape: '長方形 (3 個側面)',
+        netType: '中間 3 個長方形 + 上下各 1 個三角形',
+        euler: '6 - 9 + 5 = 2 (三角柱尤拉公式成立)',
+        mnemonic: '柱體邊數 ＝ 底面邊數 × 3 (3 × 3 = 9)',
+        desc: '兩個全等三角形平行相對，側面由 3 個長方形圍成帳篷狀！',
+        quizzes: [
+          {
+            q: '三角柱的側面展開之後，是由幾個什麼形狀組成的？',
+            opts: ['3 個長方形', '2 個三角形', '3 個三角形'],
+            answer: 0,
+            explain: '柱體的側面一定是長方形或平行四邊形！三角柱底面有 3 條邊，所以側面由 3 個長方形組成。'
+          },
+          {
+            q: '三角柱一共有幾個頂點？幾條邊？',
+            opts: ['6 個頂點、9 條邊', '5 個頂點、8 條邊', '6 個頂點、6 條邊'],
+            answer: 0,
+            explain: '記憶公式：柱體頂點數 ＝ 底面邊數 × 2 (3 × 2 = 6)；柱體邊數 ＝ 底面邊數 × 3 (3 × 3 = 9)！'
+          }
+        ]
+      },
+      cylinder: {
+        name: '圓柱 (長方形捲曲成圓筒)',
+        icon: '🥫',
+        category: 'prism',
+        faces: 3, vertices: 0, edges: 2,
+        baseShape: '全等圓形 (2 個平行的底面)',
+        sideShape: '曲面 (展開後為長方形)',
+        netType: '一個長方形 + 上下各一個全等圓形',
+        euler: '圓柱為旋轉曲面體，無多面體頂點',
+        mnemonic: '長方形的長 ＝ 底面的圓周長！',
+        desc: '小六超重要重點：圓柱側面展開後的長方形，它的「長」剛好等於「底面圓形的圓周長」！',
+        quizzes: [
+          {
+            q: '【小六必考核心題】圓柱側面展開後的長方形，它的「長」等於底面圓形的什麼？',
+            opts: ['底面圓周長 (直徑 × 3.14)', '底面半徑', '圓柱的高'],
+            answer: 0,
+            explain: '太棒了！因為側面長方形剛好要繞圓形底面一整圈，所以長方形的長度＝圓周長＝直徑 × 3.14！'
+          },
+          {
+            q: '圓柱有幾個底面？它們之間的大小關係是什麼？',
+            opts: ['2 個全等的圓形且互相平行', '只有 1 個圓形', '2 個大小不同的圓形'],
+            answer: 0,
+            explain: '圓柱有上下 2 個互相平行且大小完全一樣的圓形底面。'
+          }
+        ]
+      },
+      square_pyramid: {
+        name: '四角錐 (金字塔形)',
+        icon: '🏛️',
+        category: 'pyramid',
+        faces: 5, vertices: 5, edges: 8,
+        baseShape: '正方形 (1 個底面)',
+        sideShape: '等腰三角形 (4 個側面)',
+        netType: '中間正方形 + 四周 4 個三角形花瓣',
+        euler: '5 - 8 + 5 = 2 (四角錐尤拉公式成立)',
+        mnemonic: '錐體頂點數 ＝ 底面邊數 ＋ 1 (4 + 1 = 5)',
+        desc: '一個正方形底面，側面 4 個等腰三角形向中央頂點集中匯聚！',
+        quizzes: [
+          {
+            q: '四角錐展開之後，側面是由什麼形狀組成的？',
+            opts: ['4 個三角形', '4 個正方形', '1 個長方形'],
+            answer: 0,
+            explain: '錐體的側面全部都是三角形！四角錐側面由 4 個等腰三角形組成，展開時像四瓣花朵。'
+          },
+          {
+            q: '四角錐一共有幾個頂點？幾條邊？',
+            opts: ['5 個頂點、8 條邊', '4 個頂點、6 條邊', '8 個頂點、12 條邊'],
+            answer: 0,
+            explain: '錐體公式：頂點數 ＝ 底面邊數 ＋ 1 (4 + 1 = 5)；邊數 ＝ 底面邊數 × 2 (4 × 2 = 8)！'
+          }
+        ]
+      },
+      tri_pyramid: {
+        name: '三角錐 (正四面體)',
+        icon: '📐',
+        category: 'pyramid',
+        faces: 4, vertices: 4, edges: 6,
+        baseShape: '正三角形 (1 個底面)',
+        sideShape: '正三角形 (3 個側面)',
+        netType: '由 4 個全等的正三角形組成',
+        euler: '4 - 6 + 4 = 2 (正四面體尤拉公式成立)',
+        mnemonic: '最少面數的立體多面體！',
+        desc: '由 4 個大小完全相等的正三角形組成，每個面都可以當作底面！',
+        quizzes: [
+          {
+            q: '正四面體（三角錐）的展開圖，是由幾個全等的三角形組成的？',
+            opts: ['4 個全等正三角形', '3 個三角形', '6 個三角形'],
+            answer: 0,
+            explain: '正四面體共有 4 個全等的正三角形面，展開圖由一個大三角形切成 4 個小三角形組成！'
+          },
+          {
+            q: '三角錐的面數和頂點數分別是多少？',
+            opts: ['4 個面，4 個頂點', '4 個面，6 個頂點', '3 個面，4 個頂點'],
+            answer: 0,
+            explain: '三角錐有 4 個面、4 個頂點，邊數為 6 條。頂點數 ＝ 3 + 1 = 4，邊數 ＝ 3 × 2 = 6！'
+          }
+        ]
+      },
+      cone: {
+        name: '圓錐 (扇形捲曲成尖塔)',
+        icon: '🍦',
+        category: 'pyramid',
+        faces: 2, vertices: 1, edges: 1,
+        baseShape: '圓形 (1 個底面)',
+        sideShape: '曲面 (展開後為扇形)',
+        netType: '一個扇形 + 一個圓形',
+        euler: '旋轉體，頂部有 1 個錐頂點',
+        mnemonic: '扇形的弧長 ＝ 底面的圓周長！',
+        desc: '小六重點觀念：圓錐側面展開是一個扇形，扇形的弧長等於底面圓形的周長！',
+        quizzes: [
+          {
+            q: '圓錐側面展開後的形狀是什麼？',
+            opts: ['扇形', '三角形', '圓形'],
+            answer: 0,
+            explain: '圓錐側面展開是一個「扇形」，當折回成立體時，扇形捲起頂點聚攏形成圓錐尖頂！'
+          },
+          {
+            q: '圓錐側面扇形的「弧長」，等於底面圓形的什麼？',
+            opts: ['底面的圓周長', '底面的直徑', '圓錐的高'],
+            answer: 0,
+            explain: '因為扇形的圓弧剛好要繞底面圓形一整圈閉合，所以扇形弧長＝底面圓周長！'
+          }
+        ]
+      }
+    };
+
+    /* =========================================================
+       2. Web Audio Sound Synthesizer (Zero External Dependencies)
+       ========================================================= */
+    const Sound = {
+      ctx: null,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      },
+      beep(freq = 440, duration = 0.08, type = 'sine', volume = 0.15) {
+        if (!STATE.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      click() {
+        this.beep(520, 0.03, 'sine', 0.08);
+      },
+      chordComplete() {
+        if (!STATE.soundEnabled) return;
+        const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 arpeggio
+        freqs.forEach((f, i) => {
+          setTimeout(() => this.beep(f, 0.22, 'triangle', 0.12), i * 70);
+        });
+      },
+      correct() {
+        if (!STATE.soundEnabled) return;
+        const notes = [587.33, 739.99, 880.00, 1174.66]; // D Major fanfare
+        notes.forEach((f, i) => {
+          setTimeout(() => this.beep(f, 0.25, 'triangle', 0.15), i * 90);
+        });
+      },
+      wrong() {
+        if (!STATE.soundEnabled) return;
+        this.beep(220, 0.2, 'sawtooth', 0.1);
+        setTimeout(() => this.beep(196, 0.25, 'sawtooth', 0.1), 120);
+      }
+    };
+
+    /* =========================================================
+       3. Canvas Confetti Effect
+       ========================================================= */
+    const Confetti = {
+      canvas: document.getElementById('confetti-canvas'),
+      ctx: null,
+      particles: [],
+      animId: null,
+      init() {
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      },
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      },
+      launch() {
+        this.particles = [];
+        const colors = ['#4f7cff', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#38bdf8'];
+        for (let i = 0; i < 90; i++) {
+          this.particles.push({
+            x: window.innerWidth * (0.3 + Math.random() * 0.4),
+            y: window.innerHeight * 0.4,
+            vx: (Math.random() - 0.5) * 16,
+            vy: (Math.random() - 0.9) * 18,
+            size: Math.random() * 8 + 5,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rSpeed: (Math.random() - 0.5) * 12,
+            opacity: 1
+          });
+        }
+        if (!this.animId) this.loop();
+      },
+      loop() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let activeCount = 0;
+        for (let p of this.particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45; // gravity
+          p.rotation += p.rSpeed;
+          p.opacity -= 0.012;
+          if (p.opacity > 0) {
+            activeCount++;
+            this.ctx.save();
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate((p.rotation * Math.PI) / 180);
+            this.ctx.globalAlpha = Math.max(0, p.opacity);
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+            this.ctx.restore();
+          }
+        }
+        if (activeCount > 0) {
+          this.animId = requestAnimationFrame(() => this.loop());
+        } else {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.animId = null;
+        }
+      }
+    };
+    Confetti.init();
+
+    /* =========================================================
+       4. Three.js Texture Generators for Educational Faces
+       ========================================================= */
+    const TextureGen = {
+      cache: {},
+      createFace(label, subtext = '', isBase = false) {
+        const key = `${label}_${subtext}_${isBase}`;
+        if (this.cache[key]) return this.cache[key];
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+
+        // Background gradient
+        const bgGrad = ctx.createLinearGradient(0, 0, 512, 512);
+        if (isBase) {
+          bgGrad.addColorStop(0, '#ffbe76'); // warm golden orange for 底面
+          bgGrad.addColorStop(1, '#f0932b');
+        } else {
+          bgGrad.addColorStop(0, '#74b9ff'); // fresh sky blue for 側面
+          bgGrad.addColorStop(1, '#0984e3');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 512, 512);
+
+        // Grid / border lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.lineWidth = 16;
+        ctx.strokeRect(8, 8, 496, 496);
+
+        // Inner dashed guide
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([12, 8]);
+        ctx.strokeRect(28, 28, 456, 456);
+        ctx.setLineDash([]);
+
+        // Label pill
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        const pillY = subtext ? 180 : 210;
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(66, pillY - 50, 380, 100, 20);
+        } else {
+          ctx.rect(66, pillY - 50, 380, 100);
+        }
+        ctx.fill();
+
+        // Main text
+        ctx.fillStyle = isBase ? '#b33939' : '#0c2461';
+        ctx.font = 'bold 54px "Noto Sans TC", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, 256, pillY);
+
+        // Subtext / Face number
+        if (subtext) {
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 36px "Noto Sans TC", sans-serif';
+          ctx.shadowColor = 'rgba(0,0,0,0.3)';
+          ctx.shadowBlur = 6;
+          ctx.fillText(subtext, 256, 340);
+          ctx.shadowBlur = 0;
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.anisotropy = 4;
+        this.cache[key] = texture;
+        return texture;
+      }
+    };
+
+    /* =========================================================
+       5. 3D Scene, Camera, Lighting & Controls Setup
+       ========================================================= */
+    const container = document.getElementById('canvasContainer');
+    const canvas = document.getElementById('webgl-canvas');
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf6f9fc);
+
+    // Subtle 3D ground grid
+    const grid = new THREE.GridHelper(24, 24, 0xccd9e8, 0xe2eaf2);
+    grid.position.y = -0.01;
+    scene.add(grid);
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(7.5, 9.5, 11);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    dirLight.position.set(8, 16, 10);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    const fillLight = new THREE.DirectionalLight(0xdce7ff, 0.4);
+    fillLight.position.set(-8, 6, -8);
+    scene.add(fillLight);
+
+    // Camera Controls: Use OrbitControls if available, or fallback smoothly
+    let controls = null;
+    if (typeof THREE.OrbitControls !== 'undefined') {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.maxPolarAngle = Math.PI / 2 + 0.1; // Don't go far below floor
+      controls.minDistance = 3;
+      controls.maxDistance = 25;
+      controls.target.set(0, 0.8, 0);
+    } else {
+      // Robust fallback pointer drag controls
+      let isDragging = false, prevX = 0, prevY = 0;
+      let sph = { r: 16, theta: 0.8, phi: 0.9 };
+      const updateCam = () => {
+        sph.phi = Math.max(0.1, Math.min(Math.PI / 2, sph.phi));
+        camera.position.x = sph.r * Math.sin(sph.phi) * Math.sin(sph.theta);
+        camera.position.y = sph.r * Math.cos(sph.phi);
+        camera.position.z = sph.r * Math.sin(sph.phi) * Math.cos(sph.theta);
+        camera.lookAt(0, 0.8, 0);
+      };
+      updateCam();
+      canvas.addEventListener('pointerdown', (e) => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+      window.addEventListener('pointerup', () => { isDragging = false; });
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - prevX;
+        const dy = e.clientY - prevY;
+        prevX = e.clientX; prevY = e.clientY;
+        sph.theta -= dx * 0.008;
+        sph.phi -= dy * 0.008;
+        updateCam();
+      });
+      canvas.addEventListener('wheel', (e) => {
+        sph.r = Math.max(4, Math.min(24, sph.r + e.deltaY * 0.01));
+        updateCam();
+      });
+    }
+
+    // Window Resize Handling
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+
+    /* =========================================================
+       6. Procedural Folding Geometry Generators
+       ========================================================= */
+    const rootModelGroup = new THREE.Group();
+    scene.add(rootModelGroup);
+
+    // Track active meshes and materials for dynamic toggles (labels, wireframe, opacity)
+    let currentModelData = {
+      updateFold: (t) => {},
+      materials: [],
+      edgeObjects: [],
+      vertexObjects: []
+    };
+
+    // Helper: Create a textured quad plane
+    function makeQuadFace(width, height, label, subtext, isBase) {
+      const geo = new THREE.PlaneGeometry(width, height);
+      geo.rotateX(-Math.PI / 2); // Lie on X-Z plane with normal facing +Y
+      const mat = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace(label, subtext, isBase),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        metalness: 0.05,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(mat);
+
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      // Dark edge lines for clear geometric definition
+      const edgeGeo = new THREE.EdgesGeometry(geo);
+      const edgeMat = new THREE.LineBasicMaterial({
+        color: 0x0f172a,
+        linewidth: 2,
+        visible: STATE.showEdges
+      });
+      currentModelData.edgeObjects.push(edgeMat);
+      const edgeLines = new THREE.LineSegments(edgeGeo, edgeMat);
+      mesh.add(edgeLines);
+
+      return mesh;
+    }
+
+    // Helper: Create a textured triangle
+    function makeTriFace(p1, p2, p3, label, subtext, isBase) {
+      const geo = new THREE.BufferGeometry();
+      const vertices = new Float32Array([
+        p1.x, p1.y, p1.z,
+        p2.x, p2.y, p2.z,
+        p3.x, p3.y, p3.z
+      ]);
+      geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+      geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array([0.5, 1.0, 0.0, 0.0, 1.0, 0.0]), 2));
+      geo.computeVertexNormals();
+
+      const mat = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace(label, subtext, isBase),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(mat);
+
+      const mesh = new THREE.Mesh(geo, mat);
+      const edgeGeo = new THREE.EdgesGeometry(geo);
+      const edgeMat = new THREE.LineBasicMaterial({
+        color: 0x0f172a,
+        linewidth: 2,
+        visible: STATE.showEdges
+      });
+      currentModelData.edgeObjects.push(edgeMat);
+      mesh.add(new THREE.LineSegments(edgeGeo, edgeMat));
+      return mesh;
+    }
+
+    // Helper: Create a vertex point marker (Small glowing ball)
+    function addVertexMarker(parent, x, y, z) {
+      const dotGeo = new THREE.SphereGeometry(0.08, 12, 12);
+      const dotMat = new THREE.MeshBasicMaterial({
+        color: 0xe11d48,
+        visible: STATE.showEdges
+      });
+      currentModelData.vertexObjects.push(dotMat);
+      const dot = new THREE.Mesh(dotGeo, dotMat);
+      dot.position.set(x, y, z);
+      parent.add(dot);
+    }
+
+    /* ---------------------------------------------------------
+       Shape 1: 正方體 (1-4-1 十字型展開圖)
+       --------------------------------------------------------- */
+    function buildCubeCross() {
+      const s = 2.4; // edge length
+      const group = new THREE.Group();
+
+      // Center Anchor Face: Bottom 1
+      const faceBottom = makeQuadFace(s, s, '底面', '面 1', true);
+      group.add(faceBottom);
+
+      // Front Face 2 (Hinged at bottom's front edge: z = +s/2)
+      const pivotFront = new THREE.Group();
+      pivotFront.position.set(0, 0, s / 2);
+      const faceFront = makeQuadFace(s, s, '側面 1', '面 2', false);
+      faceFront.position.set(0, 0, s / 2);
+      pivotFront.add(faceFront);
+
+      // Top Face 6 (Hinged at Front's far edge: z = s inside pivotFront)
+      const pivotTop = new THREE.Group();
+      pivotTop.position.set(0, 0, s);
+      const faceTop = makeQuadFace(s, s, '底面 (頂)', '面 6', true);
+      faceTop.position.set(0, 0, s / 2);
+      pivotTop.add(faceTop);
+      pivotFront.add(pivotTop);
+      group.add(pivotFront);
+
+      // Back Face 3 (Hinged at bottom's back edge: z = -s/2)
+      const pivotBack = new THREE.Group();
+      pivotBack.position.set(0, 0, -s / 2);
+      const faceBack = makeQuadFace(s, s, '側面 2', '面 3', false);
+      faceBack.position.set(0, 0, -s / 2);
+      pivotBack.add(faceBack);
+      group.add(pivotBack);
+
+      // Left Face 4 (Hinged at bottom's left edge: x = -s/2)
+      const pivotLeft = new THREE.Group();
+      pivotLeft.position.set(-s / 2, 0, 0);
+      const faceLeft = makeQuadFace(s, s, '側面 3', '面 4', false);
+      faceLeft.position.set(-s / 2, 0, 0);
+      pivotLeft.add(faceLeft);
+      group.add(pivotLeft);
+
+      // Right Face 5 (Hinged at bottom's right edge: x = +s/2)
+      const pivotRight = new THREE.Group();
+      pivotRight.position.set(s / 2, 0, 0);
+      const faceRight = makeQuadFace(s, s, '側面 4', '面 5', false);
+      faceRight.position.set(s / 2, 0, 0);
+      pivotRight.add(faceRight);
+      group.add(pivotRight);
+
+      // Vertex Markers on Anchor
+      addVertexMarker(faceBottom, -s/2, 0, -s/2);
+      addVertexMarker(faceBottom,  s/2, 0, -s/2);
+      addVertexMarker(faceBottom,  s/2, 0,  s/2);
+      addVertexMarker(faceBottom, -s/2, 0,  s/2);
+
+      const updateFold = (t) => {
+        const angle = t * (Math.PI / 2);
+        pivotFront.rotation.x = -angle;
+        pivotTop.rotation.x = -angle;
+        pivotBack.rotation.x = angle;
+        pivotLeft.rotation.z = -angle;
+        pivotRight.rotation.z = angle;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 2: 正方體 (2-2-2 階梯型展開圖)
+       --------------------------------------------------------- */
+    function buildCubeStair() {
+      const s = 2.4;
+      const group = new THREE.Group();
+
+      // Anchor Face 3 (Bottom, in middle step)
+      const face3 = makeQuadFace(s, s, '底面', '面 3', true);
+      group.add(face3);
+
+      // Face 4 hinged on right of Face 3 (x = +s/2)
+      const pivot4 = new THREE.Group();
+      pivot4.position.set(s / 2, 0, 0);
+      const face4 = makeQuadFace(s, s, '側面 1', '面 4', false);
+      face4.position.set(s / 2, 0, 0);
+      pivot4.add(face4);
+
+      // Face 5 hinged on front of Face 4 (at (0, 0, s/2) in pivot4)
+      const pivot5 = new THREE.Group();
+      pivot5.position.set(0, 0, s / 2);
+      const face5 = makeQuadFace(s, s, '側面 2', '面 5', false);
+      face5.position.set(s / 2, 0, s / 2);
+      pivot5.add(face5);
+
+      // Face 6 hinged on right of Face 5 (at (s, 0, 0) in pivot5)
+      const pivot6 = new THREE.Group();
+      pivot6.position.set(s, 0, 0);
+      const face6 = makeQuadFace(s, s, '頂面', '面 6', true);
+      face6.position.set(s / 2, 0, s / 2);
+      pivot6.add(face6);
+
+      pivot5.add(pivot6);
+      pivot4.add(pivot5);
+      group.add(pivot4);
+
+      // Face 2 hinged on back of Face 3 (z = -s/2)
+      const pivot2 = new THREE.Group();
+      pivot2.position.set(0, 0, -s / 2);
+      const face2 = makeQuadFace(s, s, '側面 3', '面 2', false);
+      face2.position.set(0, 0, -s / 2);
+      pivot2.add(face2);
+
+      // Face 1 hinged on left of Face 2 (at (-s/2, 0, 0) in pivot2)
+      const pivot1 = new THREE.Group();
+      pivot1.position.set(-s / 2, 0, 0);
+      const face1 = makeQuadFace(s, s, '側面 4', '面 1', false);
+      face1.position.set(-s / 2, 0, -s / 2);
+      pivot1.add(face1);
+      pivot2.add(pivot1);
+
+      group.add(pivot2);
+
+      const updateFold = (t) => {
+        const ang = t * (Math.PI / 2);
+        pivot4.rotation.z = ang;
+        pivot5.rotation.x = -ang;
+        pivot6.rotation.z = ang;
+        pivot2.rotation.x = ang;
+        pivot1.rotation.z = -ang;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 3: 正方體 (2-3-1 型展開圖)
+       --------------------------------------------------------- */
+    function buildCube231() {
+      const s = 2.4;
+      const group = new THREE.Group();
+
+      // Row 2 middle face is Anchor (Face 3)
+      const face3 = makeQuadFace(s, s, '底面', '面 3', true);
+      group.add(face3);
+
+      // Face 4 right of Face 3 (at (s/2, 0, 0))
+      const p4 = new THREE.Group();
+      p4.position.set(s / 2, 0, 0);
+      const face4 = makeQuadFace(s, s, '側面 1', '面 4', false);
+      face4.position.set(s / 2, 0, 0);
+      p4.add(face4);
+
+      // Face 5 right of Face 4 (at (s, 0, 0) in p4)
+      const p5 = new THREE.Group();
+      p5.position.set(s, 0, 0);
+      const face5 = makeQuadFace(s, s, '頂面', '面 5', true);
+      face5.position.set(s / 2, 0, 0);
+      p5.add(face5);
+      p4.add(p5);
+
+      // Face 6 front of Face 4 (at (0, 0, s/2) in p4)
+      const p6 = new THREE.Group();
+      p6.position.set(0, 0, s / 2);
+      const face6 = makeQuadFace(s, s, '側面 2', '面 6', false);
+      face6.position.set(s / 2, 0, s / 2);
+      p6.add(face6);
+      p4.add(p6);
+
+      group.add(p4);
+
+      // Face 2 back of Face 3 (z = -s/2)
+      const p2 = new THREE.Group();
+      p2.position.set(0, 0, -s / 2);
+      const face2 = makeQuadFace(s, s, '側面 3', '面 2', false);
+      face2.position.set(0, 0, -s / 2);
+      p2.add(face2);
+
+      // Face 1 left of Face 2 (at (-s/2, 0, 0) in p2)
+      const p1 = new THREE.Group();
+      p1.position.set(-s / 2, 0, 0);
+      const face1 = makeQuadFace(s, s, '側面 4', '面 1', false);
+      face1.position.set(-s / 2, 0, -s / 2);
+      p1.add(face1);
+      p2.add(p1);
+
+      group.add(p2);
+
+      const updateFold = (t) => {
+        const ang = t * (Math.PI / 2);
+        p4.rotation.z = ang;
+        p5.rotation.z = ang;
+        p6.rotation.x = -ang;
+        p2.rotation.x = ang;
+        p1.rotation.z = -ang;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 4: 長方體 (Rectangular Prism)
+       --------------------------------------------------------- */
+    function buildCuboid() {
+      const W = 3.2; // Width (X)
+      const H = 1.8; // Height (Y)
+      const D = 2.2; // Depth (Z)
+      const group = new THREE.Group();
+
+      // Anchor: Bottom Face (W x D)
+      const faceBottom = makeQuadFace(W, D, '底面 (下)', `${W} × ${D}`, true);
+      group.add(faceBottom);
+
+      // Front Face (W x H) hinged at z = +D/2
+      const pFront = new THREE.Group();
+      pFront.position.set(0, 0, D / 2);
+      const faceFront = makeQuadFace(W, H, '側面 (前)', `${W} × ${H}`, false);
+      faceFront.position.set(0, 0, H / 2);
+      pFront.add(faceFront);
+
+      // Top Face (W x D) attached to Front far edge (0, 0, H) inside pFront
+      const pTop = new THREE.Group();
+      pTop.position.set(0, 0, H);
+      const faceTop = makeQuadFace(W, D, '底面 (頂)', `${W} × ${D}`, true);
+      faceTop.position.set(0, 0, D / 2);
+      pTop.add(faceTop);
+      pFront.add(pTop);
+      group.add(pFront);
+
+      // Back Face (W x H) hinged at z = -D/2
+      const pBack = new THREE.Group();
+      pBack.position.set(0, 0, -D / 2);
+      const faceBack = makeQuadFace(W, H, '側面 (後)', `${W} × ${H}`, false);
+      faceBack.position.set(0, 0, -H / 2);
+      pBack.add(faceBack);
+      group.add(pBack);
+
+      // Left Face (D x H) hinged at x = -W/2
+      const pLeft = new THREE.Group();
+      pLeft.position.set(-W / 2, 0, 0);
+      const faceLeft = makeQuadFace(H, D, '側面 (左)', `${D} × ${H}`, false);
+      faceLeft.position.set(-H / 2, 0, 0);
+      pLeft.add(faceLeft);
+      group.add(pLeft);
+
+      // Right Face (D x H) hinged at x = +W/2
+      const pRight = new THREE.Group();
+      pRight.position.set(W / 2, 0, 0);
+      const faceRight = makeQuadFace(H, D, '側面 (右)', `${D} × ${H}`, false);
+      faceRight.position.set(H / 2, 0, 0);
+      pRight.add(faceRight);
+      group.add(pRight);
+
+      const updateFold = (t) => {
+        const ang = t * (Math.PI / 2);
+        pFront.rotation.x = -ang;
+        pTop.rotation.x = -ang;
+        pBack.rotation.x = ang;
+        pLeft.rotation.z = -ang;
+        pRight.rotation.z = ang;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 5: 三角柱 (Triangular Prism)
+       --------------------------------------------------------- */
+    function buildTriPrism() {
+      const a = 2.4; // Base edge length
+      const L = 3.2; // Prism length (along Z)
+      const hTri = a * (Math.sqrt(3) / 2); // Equilateral triangle height ~ 2.078
+      const group = new THREE.Group();
+
+      // Middle Rectangular Face (側面 1, a x L)
+      const faceMid = makeQuadFace(a, L, '側面 1', '中間矩形', false);
+      group.add(faceMid);
+
+      // Left Rectangular Face (側面 2, a x L) hinged at x = -a/2
+      const pLeft = new THREE.Group();
+      pLeft.position.set(-a / 2, 0, 0);
+      const faceLeft = makeQuadFace(a, L, '側面 2', '左側矩形', false);
+      faceLeft.position.set(-a / 2, 0, 0);
+      pLeft.add(faceLeft);
+      group.add(pLeft);
+
+      // Right Rectangular Face (側面 3, a x L) hinged at x = +a/2
+      const pRight = new THREE.Group();
+      pRight.position.set(a / 2, 0, 0);
+      const faceRight = makeQuadFace(a, L, '側面 3', '右側矩形', false);
+      faceRight.position.set(a / 2, 0, 0);
+      pRight.add(faceRight);
+      group.add(pRight);
+
+      // Front Triangular Base (底面-前) hinged at z = +L/2
+      const pFrontTri = new THREE.Group();
+      pFrontTri.position.set(0, 0, L / 2);
+      const triFront = makeTriFace(
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(0, 0, hTri),
+        '底面', '前正三角形', true
+      );
+      pFrontTri.add(triFront);
+      group.add(pFrontTri);
+
+      // Back Triangular Base (底面-後) hinged at z = -L/2
+      const pBackTri = new THREE.Group();
+      pBackTri.position.set(0, 0, -L / 2);
+      const triBack = makeTriFace(
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(0, 0, -hTri),
+        '底面', '後正三角形', true
+      );
+      pBackTri.add(triBack);
+      group.add(pBackTri);
+
+      const updateFold = (t) => {
+        // Equilateral prism dihedral angle is 60 deg, so fold from flat (180 deg) is 120 deg
+        const sideFoldAng = t * (Math.PI * 2 / 3);
+        pLeft.rotation.z = -sideFoldAng;
+        pRight.rotation.z = sideFoldAng;
+
+        // Bases fold up 90 deg
+        const baseAng = t * (Math.PI / 2);
+        pFrontTri.rotation.x = -baseAng;
+        pBackTri.rotation.x = baseAng;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 6: 圓柱 (Cylinder: Long flat rectangle rolling into cylinder)
+       --------------------------------------------------------- */
+    function buildCylinder() {
+      const R = 1.15; // Cylinder radius
+      const H = 2.8;  // Cylinder height
+      const C = 2 * Math.PI * R; // Circumference ~ 7.225
+      const group = new THREE.Group();
+
+      // Procedural Segmented Rectangle for Lateral Surface
+      const segments = 48;
+      const geo = new THREE.PlaneGeometry(C, H, segments, 1);
+      geo.rotateX(-Math.PI / 2); // Flat on X-Z plane
+
+      const mat = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace('圓柱側面', `長方形 (長 = 圓周長 ${C.toFixed(2)})`, false),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(mat);
+
+      const lateralMesh = new THREE.Mesh(geo, mat);
+      lateralMesh.castShadow = true;
+      group.add(lateralMesh);
+
+      // Top circular cap hinged at z = +H/2
+      const topCapGroup = new THREE.Group();
+      topCapGroup.position.set(0, 0, H / 2);
+      const circleGeoTop = new THREE.CircleGeometry(R, 32);
+      circleGeoTop.rotateX(-Math.PI / 2);
+      const matCircleTop = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace('圓形底面', '上底面', true),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(matCircleTop);
+      const circleTop = new THREE.Mesh(circleGeoTop, matCircleTop);
+      circleTop.position.set(0, 0, R);
+      topCapGroup.add(circleTop);
+      group.add(topCapGroup);
+
+      // Bottom circular cap hinged at z = -H/2
+      const bottomCapGroup = new THREE.Group();
+      bottomCapGroup.position.set(0, 0, -H / 2);
+      const circleGeoBottom = new THREE.CircleGeometry(R, 32);
+      circleGeoBottom.rotateX(-Math.PI / 2);
+      const matCircleBottom = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace('圓形底面', '下底面', true),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(matCircleBottom);
+      const circleBottom = new THREE.Mesh(circleGeoBottom, matCircleBottom);
+      circleBottom.position.set(0, 0, -R);
+      bottomCapGroup.add(circleBottom);
+      group.add(bottomCapGroup);
+
+      // Store initial flat vertex positions
+      const posAttr = geo.attributes.position;
+      const initialPositions = posAttr.array.slice();
+
+      const updateFold = (t) => {
+        // Lateral surface mathematically curls with radius rho = R / t
+        const count = posAttr.count;
+        const phi = t * 2 * Math.PI; // Total angle of curl
+
+        for (let i = 0; i < count; i++) {
+          const initX = initialPositions[i * 3];
+          const initY = initialPositions[i * 3 + 1];
+          const initZ = initialPositions[i * 3 + 2]; // along length H
+
+          const u = initX / C; // Normalized from -0.5 to +0.5
+
+          if (t < 0.002) {
+            posAttr.setXYZ(i, initX, 0, initZ);
+          } else {
+            const rho = R / t;
+            const theta = u * phi;
+            // Curling formula: smooth transition from flat plane to closed cylinder
+            const x = rho * Math.sin(theta);
+            const y = rho * (1 - Math.cos(theta)) * t;
+            posAttr.setXYZ(i, x, y, initZ);
+          }
+        }
+        posAttr.needsUpdate = true;
+        geo.computeVertexNormals();
+
+        // Position model centered so cylinder axis is at origin when closed
+        lateralMesh.position.y = -t * R;
+
+        // Circular caps fold up 90 deg and move to cylinder ends
+        const capAngle = t * (Math.PI / 2);
+        topCapGroup.rotation.x = -capAngle;
+        topCapGroup.position.y = -t * R;
+
+        bottomCapGroup.rotation.x = capAngle;
+        bottomCapGroup.position.y = -t * R;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 7: 四角錐 (Square Pyramid: Egyptian Pyramid)
+       --------------------------------------------------------- */
+    function buildSquarePyramid() {
+      const a = 2.6; // Square base side
+      const H = 2.0; // Pyramid height
+      const slantH = Math.sqrt(H * H + (a / 2) * (a / 2)); // Slant height ~ 2.385
+      const foldAngle = Math.atan2(H, a / 2); // Fold angle to close ~ 57 deg
+      const group = new THREE.Group();
+
+      // Square Base (底面)
+      const baseFace = makeQuadFace(a, a, '正方形底面', `${a} × ${a}`, true);
+      group.add(baseFace);
+
+      // Front Triangle Face (側面 1) hinged at z = +a/2
+      const pFront = new THREE.Group();
+      pFront.position.set(0, 0, a / 2);
+      const triFront = makeTriFace(
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(0, 0, slantH),
+        '側面 1', '等腰三角形', false
+      );
+      pFront.add(triFront);
+      group.add(pFront);
+
+      // Back Triangle Face (側面 2) hinged at z = -a/2
+      const pBack = new THREE.Group();
+      pBack.position.set(0, 0, -a / 2);
+      const triBack = makeTriFace(
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(0, 0, -slantH),
+        '側面 2', '等腰三角形', false
+      );
+      pBack.add(triBack);
+      group.add(pBack);
+
+      // Left Triangle Face (側面 3) hinged at x = -a/2
+      const pLeft = new THREE.Group();
+      pLeft.position.set(-a / 2, 0, 0);
+      const triLeft = makeTriFace(
+        new THREE.Vector3(0, 0, a / 2),
+        new THREE.Vector3(0, 0, -a / 2),
+        new THREE.Vector3(-slantH, 0, 0),
+        '側面 3', '等腰三角形', false
+      );
+      pLeft.add(triLeft);
+      group.add(pLeft);
+
+      // Right Triangle Face (側面 4) hinged at x = +a/2
+      const pRight = new THREE.Group();
+      pRight.position.set(a / 2, 0, 0);
+      const triRight = makeTriFace(
+        new THREE.Vector3(0, 0, -a / 2),
+        new THREE.Vector3(0, 0, a / 2),
+        new THREE.Vector3(slantH, 0, 0),
+        '側面 4', '等腰三角形', false
+      );
+      pRight.add(triRight);
+      group.add(pRight);
+
+      // Vertex Markers
+      addVertexMarker(baseFace, -a/2, 0, -a/2);
+      addVertexMarker(baseFace,  a/2, 0, -a/2);
+      addVertexMarker(baseFace,  a/2, 0,  a/2);
+      addVertexMarker(baseFace, -a/2, 0,  a/2);
+
+      const updateFold = (t) => {
+        const ang = t * foldAngle;
+        pFront.rotation.x = -ang;
+        pBack.rotation.x = ang;
+        pLeft.rotation.z = -ang;
+        pRight.rotation.z = ang;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 8: 三角錐 (正四面體 Regular Tetrahedron)
+       --------------------------------------------------------- */
+    function buildTriPyramid() {
+      const a = 2.8; // Edge length
+      const hTri = a * (Math.sqrt(3) / 2); // ~ 2.425
+      const dihedral = Math.acos(1 / 3); // ~ 70.53 deg
+      const foldAng = Math.PI - dihedral; // ~ 109.47 deg
+      const group = new THREE.Group();
+
+      // Central Base Triangle (底面)
+      // Placed with base along X at z = 0, pointing towards +Z
+      const triBase = makeTriFace(
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(0, 0, hTri),
+        '底面', '正三角形', true
+      );
+      group.add(triBase);
+
+      // Flap 1 (Along bottom edge at z = 0)
+      const p1 = new THREE.Group();
+      p1.position.set(0, 0, 0);
+      const tri1 = makeTriFace(
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(0, 0, -hTri),
+        '側面 1', '正三角形', false
+      );
+      p1.add(tri1);
+      group.add(p1);
+
+      // Flap 2 (Along right slanted edge)
+      const p2 = new THREE.Group();
+      p2.position.set(a / 4, 0, hTri / 2);
+      p2.rotation.y = -Math.PI / 3;
+      const tri2 = makeTriFace(
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(0, 0, hTri),
+        '側面 2', '正三角形', false
+      );
+      tri2.position.set(0, 0, 0);
+      p2.add(tri2);
+      group.add(p2);
+
+      // Flap 3 (Along left slanted edge)
+      const p3 = new THREE.Group();
+      p3.position.set(-a / 4, 0, hTri / 2);
+      p3.rotation.y = Math.PI / 3;
+      const tri3 = makeTriFace(
+        new THREE.Vector3(a / 2, 0, 0),
+        new THREE.Vector3(-a / 2, 0, 0),
+        new THREE.Vector3(0, 0, hTri),
+        '側面 3', '正三角形', false
+      );
+      p3.add(tri3);
+      group.add(p3);
+
+      const updateFold = (t) => {
+        const ang = t * foldAng;
+        p1.rotation.x = ang;
+        p2.rotation.x = ang;
+        p3.rotation.x = ang;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* ---------------------------------------------------------
+       Shape 9: 圓錐 (Cone: Sector unfolding)
+       --------------------------------------------------------- */
+    function buildCone() {
+      const R = 1.2; // Base circle radius
+      const L = 3.0; // Slant height
+      const sectorAngle = 2 * Math.PI * (R / L); // ~ 144 deg (2.513 rad)
+      const H = Math.sqrt(L * L - R * R); // Cone height ~ 2.749
+      const group = new THREE.Group();
+
+      // Segmented Fan for Sector
+      const segments = 48;
+      const fanGeo = new THREE.BufferGeometry();
+      const pos = [];
+      const uvs = [];
+
+      for (let i = 0; i < segments; i++) {
+        const theta1 = (i / segments) * sectorAngle - sectorAngle / 2;
+        const theta2 = ((i + 1) / segments) * sectorAngle - sectorAngle / 2;
+
+        // Vertex 0: Apex at (0, 0, 0)
+        pos.push(0, 0, 0);
+        // Vertex 1: Rim point 1
+        pos.push(L * Math.sin(theta1), 0, L * Math.cos(theta1));
+        // Vertex 2: Rim point 2
+        pos.push(L * Math.sin(theta2), 0, L * Math.cos(theta2));
+
+        uvs.push(0.5, 0.5);
+        uvs.push(0.5 + 0.5 * Math.sin(theta1), 0.5 + 0.5 * Math.cos(theta1));
+        uvs.push(0.5 + 0.5 * Math.sin(theta2), 0.5 + 0.5 * Math.cos(theta2));
+      }
+
+      fanGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pos), 3));
+      fanGeo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+      fanGeo.computeVertexNormals();
+
+      const mat = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace('圓錐側面', `展開為扇形 (弧長 = 底面圓周長)`, false),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(mat);
+
+      const sectorMesh = new THREE.Mesh(fanGeo, mat);
+      group.add(sectorMesh);
+
+      // Base Circle attached at rim (theta = 0)
+      const baseGroup = new THREE.Group();
+      baseGroup.position.set(0, 0, L);
+      const circleGeo = new THREE.CircleGeometry(R, 32);
+      circleGeo.rotateX(-Math.PI / 2);
+      const circleMat = new THREE.MeshStandardMaterial({
+        map: TextureGen.createFace('圓形底面', '圓錐底面', true),
+        side: THREE.DoubleSide,
+        roughness: 0.35,
+        transparent: true,
+        opacity: STATE.xrayMode ? 0.45 : 0.96
+      });
+      currentModelData.materials.push(circleMat);
+      const baseCircle = new THREE.Mesh(circleGeo, circleMat);
+      baseCircle.position.set(0, 0, R);
+      baseGroup.add(baseCircle);
+      group.add(baseGroup);
+
+      const fanPosAttr = fanGeo.attributes.position;
+      const initFanPositions = fanPosAttr.array.slice();
+
+      const updateFold = (t) => {
+        // Interpolate sector curling into cone
+        const curRadius = (1 - t) * L + t * R;
+        const curHeight = t * H;
+
+        for (let i = 0; i < segments; i++) {
+          const idx = i * 9; // 3 vertices * 3 coords
+          const theta1 = (i / segments) * sectorAngle - sectorAngle / 2;
+          const theta2 = ((i + 1) / segments) * sectorAngle - sectorAngle / 2;
+
+          // Apex
+          fanPosAttr.setXYZ(i * 3, 0, curHeight, 0);
+
+          // Rim point 1
+          const curlTheta1 = theta1 * (1 - t) + (theta1 / sectorAngle * 2 * Math.PI) * t;
+          const x1 = ((1 - t) * L + t * R) * Math.sin(curlTheta1);
+          const z1 = ((1 - t) * L + t * R) * Math.cos(curlTheta1);
+          fanPosAttr.setXYZ(i * 3 + 1, x1, 0, z1);
+
+          // Rim point 2
+          const curlTheta2 = theta2 * (1 - t) + (theta2 / sectorAngle * 2 * Math.PI) * t;
+          const x2 = ((1 - t) * L + t * R) * Math.sin(curlTheta2);
+          const z2 = ((1 - t) * L + t * R) * Math.cos(curlTheta2);
+          fanPosAttr.setXYZ(i * 3 + 2, x2, 0, z2);
+        }
+        fanPosAttr.needsUpdate = true;
+        fanGeo.computeVertexNormals();
+
+        // Base circle slides smoothly into the cone base at (0, 0, 0)
+        baseGroup.position.set(0, 0, (1 - t) * L);
+        baseCircle.position.set(0, 0, (1 - t) * R);
+        baseGroup.rotation.x = 0;
+      };
+
+      return { group, updateFold };
+    }
+
+    /* =========================================================
+       7. Model Swapper & UI Synchronizer
+       ========================================================= */
+    function loadShapeModel(shapeKey) {
+      // Clear previous model
+      while (rootModelGroup.children.length > 0) {
+        rootModelGroup.remove(rootModelGroup.children[0]);
+      }
+      currentModelData.materials = [];
+      currentModelData.edgeObjects = [];
+      currentModelData.vertexObjects = [];
+
+      let modelResult;
+      switch (shapeKey) {
+        case 'cube_cross': modelResult = buildCubeCross(); break;
+        case 'cube_stair': modelResult = buildCubeStair(); break;
+        case 'cube_231':   modelResult = buildCube231(); break;
+        case 'cuboid':     modelResult = buildCuboid(); break;
+        case 'tri_prism':  modelResult = buildTriPrism(); break;
+        case 'cylinder':   modelResult = buildCylinder(); break;
+        case 'square_pyramid': modelResult = buildSquarePyramid(); break;
+        case 'tri_pyramid':    modelResult = buildTriPyramid(); break;
+        case 'cone':           modelResult = buildCone(); break;
+        default: modelResult = buildCubeCross(); break;
+      }
+
+      rootModelGroup.add(modelResult.group);
+      currentModelData.updateFold = modelResult.updateFold;
+
+      // Update current fold position
+      applyFold(STATE.t);
+
+      // Update educational metadata
+      const cfg = SHAPE_CONFIGS[shapeKey];
+      document.getElementById('currentShapeName').textContent = cfg.name;
+      document.getElementById('currentShapeIcon').textContent = cfg.icon;
+
+      document.getElementById('statFaces').textContent = cfg.faces;
+      document.getElementById('statVertices').textContent = cfg.vertices;
+      document.getElementById('statEdges').textContent = cfg.edges;
+
+      document.getElementById('infoBaseShape').textContent = cfg.baseShape;
+      document.getElementById('infoSideShape').textContent = cfg.sideShape;
+      document.getElementById('infoNetType').textContent = cfg.netType;
+      document.getElementById('infoEuler').textContent = cfg.euler;
+
+      document.getElementById('formulaMnemonic').textContent = cfg.mnemonic;
+      document.getElementById('formulaExplanation').innerHTML = `
+        <strong>特徵說明：</strong>${cfg.desc}<br>
+        <strong>柱體規律：</strong>頂點數 ＝ 底面邊數 × 2；邊數 ＝ 底面邊數 × 3；面數 ＝ 底面邊數 ＋ 2。<br>
+        <strong>錐體規律：</strong>頂點數 ＝ 底面邊數 ＋ 1；邊數 ＝ 底面邊數 × 2；面數 ＝ 底面邊數 ＋ 1。
+      `;
+
+      // Load quiz for current shape
+      loadQuiz(shapeKey, 0);
+    }
+
+    // Apply Fold Parameter (0.0 to 1.0)
+    function applyFold(t) {
+      STATE.t = Math.max(0, Math.min(1, t));
+      currentModelData.updateFold(STATE.t);
+
+      const percent = Math.round(STATE.t * 100);
+      document.getElementById('foldPercentDisplay').textContent = `${percent}%`;
+      const slider = document.getElementById('foldSlider');
+      slider.value = percent;
+      slider.style.setProperty('--progress', `${percent}%`);
+
+      // Update status badge
+      const badge = document.getElementById('currentStatusBadge');
+      if (percent === 0) {
+        badge.textContent = '展開圖 (100% 攤平)';
+        badge.className = 'status-badge';
+      } else if (percent === 100) {
+        badge.textContent = '立體圖 (完全閉合)';
+        badge.className = 'status-badge';
+      } else {
+        badge.textContent = `折疊中 (${percent}%)`;
+        badge.className = 'status-badge folding';
+      }
+    }
+
+    /* =========================================================
+       8. Quiz Management System
+       ========================================================= */
+    function loadQuiz(shapeKey, index = 0) {
+      const cfg = SHAPE_CONFIGS[shapeKey];
+      const quizzes = cfg.quizzes || [];
+      if (quizzes.length === 0) return;
+
+      STATE.currentQuizIndex = index % quizzes.length;
+      const q = quizzes[STATE.currentQuizIndex];
+
+      document.getElementById('quizCategoryBadge').textContent = `${cfg.name} 隨堂測驗`;
+      document.getElementById('quizQuestionText').textContent = `第 ${STATE.currentQuizIndex + 1} 題：${q.q}`;
+
+      const optionsBox = document.getElementById('quizOptionsContainer');
+      optionsBox.innerHTML = '';
+
+      const feedbackBox = document.getElementById('quizFeedbackBox');
+      feedbackBox.className = 'quiz-feedback';
+      feedbackBox.textContent = '';
+
+      const nextBtn = document.getElementById('quizNextBtn');
+      nextBtn.style.display = 'none';
+
+      q.opts.forEach((optText, optIdx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt-btn';
+        btn.innerHTML = `<strong>${String.fromCharCode(65 + optIdx)}.</strong> ${optText}`;
+        btn.onclick = () => handleAnswer(optIdx, q.answer, q.explain);
+        optionsBox.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(selectedIdx, correctIdx, explain) {
+      const optionsBox = document.getElementById('quizOptionsContainer');
+      const buttons = optionsBox.querySelectorAll('.quiz-opt-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      const feedbackBox = document.getElementById('quizFeedbackBox');
+      const nextBtn = document.getElementById('quizNextBtn');
+
+      if (selectedIdx === correctIdx) {
+        buttons[selectedIdx].classList.add('correct');
+        feedbackBox.className = 'quiz-feedback success show';
+        feedbackBox.innerHTML = `🎉 <strong>答對了！太厲害了！</strong><br>${explain}`;
+        STATE.quizScore++;
+        document.getElementById('quizScoreDisplay').textContent = `答對：${STATE.quizScore} 題`;
+        Sound.correct();
+        Confetti.launch();
+      } else {
+        buttons[selectedIdx].classList.add('wrong');
+        buttons[correctIdx].classList.add('correct');
+        feedbackBox.className = 'quiz-feedback fail show';
+        feedbackBox.innerHTML = `💡 <strong>差一點點，再想一下！</strong><br>${explain}`;
+        Sound.wrong();
+      }
+
+      nextBtn.style.display = 'block';
+    }
+
+    document.getElementById('quizNextBtn').addEventListener('click', () => {
+      Sound.click();
+      loadQuiz(STATE.shape, STATE.currentQuizIndex + 1);
+    });
+
+    /* =========================================================
+       9. Event Handlers & Interactivity
+       ========================================================= */
+
+    // Shape pill switcher
+    document.querySelectorAll('.pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        STATE.shape = btn.dataset.shape;
+        Sound.click();
+        loadShapeModel(STATE.shape);
+      });
+    });
+
+    // Slider input
+    const slider = document.getElementById('foldSlider');
+    slider.addEventListener('input', (e) => {
+      stopAutoPlay();
+      applyFold(parseFloat(e.target.value) / 100);
+    });
+    slider.addEventListener('change', () => {
+      Sound.click();
+      if (STATE.t === 1.0 || STATE.t === 0.0) Sound.chordComplete();
+    });
+
+    // Step Buttons
+    document.getElementById('prevStepBtn').addEventListener('click', () => {
+      stopAutoPlay();
+      Sound.click();
+      applyFold(STATE.t - 0.25);
+    });
+    document.getElementById('nextStepBtn').addEventListener('click', () => {
+      stopAutoPlay();
+      Sound.click();
+      applyFold(STATE.t + 0.25);
+    });
+
+    // Quick full fold / unfold
+    document.getElementById('unfoldAllBtn').addEventListener('click', () => {
+      stopAutoPlay();
+      Sound.chordComplete();
+      applyFold(0.0);
+    });
+    document.getElementById('foldAllBtn').addEventListener('click', () => {
+      stopAutoPlay();
+      Sound.chordComplete();
+      applyFold(1.0);
+    });
+
+    // Auto Play animation
+    const autoPlayBtn = document.getElementById('autoPlayBtn');
+    function stopAutoPlay() {
+      STATE.isAutoPlaying = false;
+      autoPlayBtn.classList.remove('playing');
+      document.getElementById('playIcon').textContent = '▶';
+      document.getElementById('playText').textContent = '自動播放折疊動畫';
+    }
+    function startAutoPlay() {
+      STATE.isAutoPlaying = true;
+      autoPlayBtn.classList.add('playing');
+      document.getElementById('playIcon').textContent = '⏸';
+      document.getElementById('playText').textContent = '暫停播放';
+      Sound.click();
+    }
+    autoPlayBtn.addEventListener('click', () => {
+      if (STATE.isAutoPlaying) {
+        stopAutoPlay();
+        Sound.click();
+      } else {
+        startAutoPlay();
+      }
+    });
+
+    // Speed chips
+    document.querySelectorAll('.speed-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.speed-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        STATE.playSpeed = parseFloat(chip.dataset.speed);
+        Sound.click();
+      });
+    });
+
+    // Tabs switcher in right panel
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        Sound.click();
+      });
+    });
+
+    // Overlays: Toggle Labels
+    const toggleLabelsBtn = document.getElementById('toggleLabelsBtn');
+    toggleLabelsBtn.addEventListener('click', () => {
+      STATE.showLabels = !STATE.showLabels;
+      toggleLabelsBtn.classList.toggle('active', STATE.showLabels);
+      Sound.click();
+      // Rebuild model with or without text
+      loadShapeModel(STATE.shape);
+    });
+
+    // Overlays: Toggle X-Ray
+    const toggleXrayBtn = document.getElementById('toggleXrayBtn');
+    toggleXrayBtn.addEventListener('click', () => {
+      STATE.xrayMode = !STATE.xrayMode;
+      toggleXrayBtn.classList.toggle('active', STATE.xrayMode);
+      Sound.click();
+      currentModelData.materials.forEach(mat => {
+        mat.opacity = STATE.xrayMode ? 0.45 : 0.96;
+      });
+    });
+
+    // Overlays: Toggle Edges & Vertices
+    const toggleEdgesBtn = document.getElementById('toggleEdgesBtn');
+    toggleEdgesBtn.addEventListener('click', () => {
+      STATE.showEdges = !STATE.showEdges;
+      toggleEdgesBtn.classList.toggle('active', STATE.showEdges);
+      Sound.click();
+      currentModelData.edgeObjects.forEach(m => m.visible = STATE.showEdges);
+      currentModelData.vertexObjects.forEach(m => m.visible = STATE.showEdges);
+    });
+
+    // Camera preset views
+    document.getElementById('viewPerspective').addEventListener('click', () => {
+      Sound.click();
+      animateCameraTo(7.5, 9.5, 11);
+    });
+    document.getElementById('viewTop').addEventListener('click', () => {
+      Sound.click();
+      animateCameraTo(0, 16, 0.01);
+    });
+    document.getElementById('viewFront').addEventListener('click', () => {
+      Sound.click();
+      animateCameraTo(0, 3, 13);
+    });
+    document.getElementById('resetCamBtn').addEventListener('click', () => {
+      Sound.click();
+      animateCameraTo(7.5, 9.5, 11);
+    });
+
+    function animateCameraTo(targetX, targetY, targetZ) {
+      if (controls) {
+        controls.target.set(0, 0.8, 0);
+      }
+      const startPos = camera.position.clone();
+      const endPos = new THREE.Vector3(targetX, targetY, targetZ);
+      let progress = 0;
+
+      function camStep() {
+        progress += 0.06;
+        camera.position.lerpVectors(startPos, endPos, Math.min(1, progress));
+        camera.lookAt(0, 0.8, 0);
+        if (progress < 1) requestAnimationFrame(camStep);
+      }
+      camStep();
+    }
+
+    // Sound toggle
+    const soundBtn = document.getElementById('soundToggleBtn');
+    soundBtn.addEventListener('click', () => {
+      STATE.soundEnabled = !STATE.soundEnabled;
+      soundBtn.textContent = STATE.soundEnabled ? '🔊 音效: 開' : '🔇 音效: 關';
+      if (STATE.soundEnabled) Sound.click();
+    });
+
+    // Keyboard navigation (Space to play/pause, Left/Right arrows to fold)
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        autoPlayBtn.click();
+      } else if (e.code === 'ArrowRight') {
+        applyFold(STATE.t + 0.05);
+      } else if (e.code === 'ArrowLeft') {
+        applyFold(STATE.t - 0.05);
+      }
+    });
+
+    /* =========================================================
+       10. Main Animation Render Loop
+       ========================================================= */
+    let lastTime = performance.now();
+
+    function renderLoop(time) {
+      requestAnimationFrame(renderLoop);
+
+      const dt = (time - lastTime) / 1000;
+      lastTime = time;
+
+      // Auto play update
+      if (STATE.isAutoPlaying) {
+        const step = 0.28 * STATE.playSpeed * dt;
+        let newT = STATE.t + step * STATE.autoPlayDirection;
+
+        if (newT >= 1.0) {
+          newT = 1.0;
+          STATE.autoPlayDirection = -1;
+          Sound.chordComplete();
+        } else if (newT <= 0.0) {
+          newT = 0.0;
+          STATE.autoPlayDirection = 1;
+          Sound.chordComplete();
+        }
+        applyFold(newT);
+      }
+
+      if (controls) controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Initial load
+    loadShapeModel(STATE.shape);
+    requestAnimationFrame(renderLoop);
+  </script>
+</body>
+</html>
