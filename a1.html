@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五年級數學｜擴分與約分互動動畫</title>
+<style>
+:root{
+  --ink:#24324a; --muted:#66738b; --bg:#f5f8ff; --card:#ffffff;
+  --blue:#4f7cff; --blue2:#dce7ff; --green:#21b573; --green2:#dff8ec;
+  --orange:#ff9f43; --orange2:#fff0dc; --pink:#ff6b9a; --purple:#8067d9;
+  --shadow:0 18px 45px rgba(55,77,120,.13);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  color:var(--ink); background:
+  radial-gradient(circle at 10% 10%,#e8efff 0 12%,transparent 30%),
+  radial-gradient(circle at 90% 0%,#fff0df 0 10%,transparent 27%),var(--bg);
+}
+.app{max-width:1120px;margin:auto;padding:28px 22px 45px}
+header{text-align:center;margin-bottom:20px}
+.badge{display:inline-block;padding:7px 14px;border-radius:999px;background:#fff;
+ box-shadow:0 5px 18px rgba(60,80,120,.1);font-weight:800;color:var(--purple);font-size:14px}
+h1{font-size:clamp(28px,5vw,48px);margin:12px 0 6px;letter-spacing:1px}
+.subtitle{color:var(--muted);font-size:17px}
+.tabs{display:flex;gap:10px;justify-content:center;margin:22px 0}
+.tab{border:0;padding:13px 28px;border-radius:16px;font-size:17px;font-weight:900;cursor:pointer;
+ background:#fff;color:var(--muted);box-shadow:0 7px 20px rgba(60,80,120,.1);transition:.2s}
+.tab.active{color:#fff;background:linear-gradient(135deg,var(--blue),#735ce5);transform:translateY(-2px)}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.card{background:rgba(255,255,255,.9);border:1px solid rgba(120,140,180,.13);
+ border-radius:26px;box-shadow:var(--shadow);padding:24px}
+.stage{min-height:450px;position:relative;overflow:hidden}
+.stage:before{content:"";position:absolute;inset:auto -60px -100px;height:230px;
+ background:radial-gradient(ellipse,#eef3ff,transparent 70%);pointer-events:none}
+.mode-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mode-title h2{margin:0;font-size:25px}.hint{color:var(--muted);font-size:14px}
+.fraction-zone{display:flex;justify-content:center;align-items:center;gap:28px;margin:38px 0 28px}
+.frac{width:145px;text-align:center;font-weight:900;font-size:48px;line-height:1}
+.frac .num{padding-bottom:12px;border-bottom:5px solid var(--ink)}
+.frac .den{padding-top:12px}
+.arrow{font-size:38px;color:var(--blue);font-weight:900;animation:float 1.7s infinite ease-in-out}
+@keyframes float{50%{transform:translateX(5px)}}
+.multiply{font-size:25px;font-weight:900;color:var(--orange);background:var(--orange2);
+ padding:10px 14px;border-radius:14px}
+.tiles{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;min-height:65px}
+.tile{width:28px;height:28px;border-radius:8px;background:linear-gradient(145deg,#78a0ff,#4f7cff);
+ box-shadow:inset 0 2px 3px #fff8,0 4px 7px #526fa833;animation:pop .35s both}
+.tile.green{background:linear-gradient(145deg,#54d99b,#21b573)}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.explain{background:#f7f9fe;border-radius:18px;padding:15px 18px;margin-top:20px;font-size:16px;line-height:1.8}
+.explain strong{color:var(--blue)}
+.controls{display:grid;gap:15px}
+.control-group{padding:17px;border-radius:19px;background:#f8faff}
+label{display:flex;justify-content:space-between;font-weight:800;margin-bottom:9px}
+input[type=range]{width:100%;accent-color:var(--blue)}
+.factor{font-size:26px;font-weight:900;color:var(--orange);text-align:center;margin:2px 0}
+button.action{border:0;border-radius:17px;padding:16px;font-size:18px;font-weight:900;cursor:pointer;
+ color:white;background:linear-gradient(135deg,#4f7cff,#7b65df);box-shadow:0 9px 18px #4f7cff33;transition:.2s}
+button.action:hover{transform:translateY(-2px);filter:brightness(1.04)}
+button.reset{background:#edf1fa;color:var(--ink);box-shadow:none}
+.steps{margin-top:18px}
+.steps h3{margin:0 0 12px}.step{display:flex;gap:12px;align-items:flex-start;margin:11px 0;color:#59667d}
+.num{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#e7edff;color:var(--blue);font-weight:900}
+.concept{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.concept div{padding:14px;border-radius:16px}.expand{background:var(--blue2)}.reduce{background:var(--green2)}
+.concept b{display:block;margin-bottom:4px}
+.footer{text-align:center;color:#7b879b;margin-top:18px;font-size:13px}
+.flash{animation:flash .65s ease}
+@keyframes flash{50%{transform:scale(1.08);text-shadow:0 0 20px #7aa1ff}}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.stage{min-height:auto}.fraction-zone{gap:12px}.frac{width:110px;font-size:38px}.arrow{font-size:30px}.concept{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header style="position:relative;">
+  <a href="index.html" style="position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:12px;background:#fff;border:1px solid #cbd5e1;text-decoration:none;font-size:14px;font-weight:800;color:#24324a;box-shadow:0 4px 12px rgba(60,80,120,.08);">🏠 回首頁</a>
+  <span class="badge">🌟 國小五年級數學互動教材</span>
+  <h1>分數的擴分 & 約分</h1>
+  <div class="subtitle">動動手，看看分數為什麼「值不變」！</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" id="expandTab">🔵 擴分</button>
+  <button class="tab" id="reduceTab">🟢 約分</button>
+</div>
+
+<div class="layout">
+<section class="card stage">
+  <div class="mode-title">
+    <h2 id="title">擴分：分子、分母一起乘</h2>
+    <span class="hint" id="hint">把分數切得更細</span>
+  </div>
+
+  <div class="fraction-zone">
+    <div class="frac" id="leftFrac"><div class="num" id="leftNum">2</div><div class="den" id="leftDen">3</div></div>
+    <div class="arrow">→</div>
+    <div class="multiply" id="operator">× <span id="factorText">2</span></div>
+    <div class="arrow">→</div>
+    <div class="frac" id="rightFrac"><div class="num" id="rightNum">4</div><div class="den" id="rightDen">6</div></div>
+  </div>
+
+  <div class="tiles" id="tiles"></div>
+  <div class="explain" id="explain">
+    <strong>想一想：</strong> 2/3 的分子和分母都乘以 2，
+    所以 2 × 2 = 4、3 × 2 = 6，得到 <strong>4/6</strong>。
+    雖然寫法變了，但代表的大小沒有變！
+  </div>
+
+  <div class="concept">
+    <div class="expand"><b>🔵 擴分</b>分子、分母同乘一個「不是 0」的數。</div>
+    <div class="reduce"><b>🟢 約分</b>分子、分母同除以一個公因數。</div>
+  </div>
+</section>
+
+<aside class="card controls">
+  <div class="control-group">
+    <label><span>原來的分子</span><span id="numValue">2</span></label>
+    <input id="numRange" type="range" min="1" max="8" value="2">
+  </div>
+  <div class="control-group">
+    <label><span>原來的分母</span><span id="denValue">3</span></label>
+    <input id="denRange" type="range" min="2" max="10" value="3">
+  </div>
+  <div class="control-group">
+    <label><span id="factorLabel">擴分倍數</span><span id="factorValue">2</span></label>
+    <input id="factorRange" type="range" min="2" max="5" value="2">
+    <div class="factor" id="factorShow">× 2</div>
+  </div>
+
+  <button class="action" id="animateBtn">✨ 播放動畫</button>
+  <button class="action reset" id="resetBtn">↺ 回到 2/3</button>
+
+  <div class="steps">
+    <h3>📌 學習小步驟</h3>
+    <div class="step"><span class="num">1</span><span id="step1">選一個擴分倍數。</span></div>
+    <div class="step"><span class="num">2</span><span id="step2">分子與分母都要做一樣的運算。</span></div>
+    <div class="step"><span class="num">3</span><span id="step3">算出新分數，再觀察大小沒有改變。</span></div>
+  </div>
+</aside>
+</div>
+<div class="footer">💡 小提醒：擴分與約分就像「換一種方式表示同一份量」。</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let mode='expand';
+
+function gcd(a,b){while(b){[a,b]=[b,a%b]}return a}
+function render(animated=false){
+  const n=+$('numRange').value, d=+$('denRange').value, f=+$('factorRange').value;
+  $('numValue').textContent=n; $('denValue').textContent=d; $('factorValue').textContent=f;
+  $('factorShow').textContent=(mode==='expand'?'× ':'÷ ')+f;
+  $('factorText').textContent=f;
+  $('leftNum').textContent=n; $('leftDen').textContent=d;
+
+  let rn,rd;
+  if(mode==='expand'){rn=n*f;rd=d*f}
+  else {
+    const g=gcd(n,d);
+    const actual=Math.min(f,g);
+    rn=n/actual; rd=d/actual;
+    $('factorText').textContent=actual;
+    $('factorShow').textContent='÷ '+actual;
+  }
+  $('rightNum').textContent=rn; $('rightDen').textContent=rd;
+  $('title').textContent=mode==='expand'?'擴分：分子、分母一起乘':'約分：分子、分母一起除';
+  $('hint').textContent=mode==='expand'?'把分數切得更細':'把分數化成更簡單的樣子';
+  $('factorLabel').textContent=mode==='expand'?'擴分倍數':'約分公因數';
+  $('step1').textContent=mode==='expand'?'選一個擴分倍數。':'找分子、分母共同可以除的數。';
+  $('step2').textContent=mode==='expand'?'分子與分母都要乘同一個數。':'分子與分母都要除以同一個數。';
+  $('step3').textContent='算出新分數，再觀察大小沒有改變。';
+  $('explain').innerHTML=mode==='expand'
+   ? `<strong>想一想：</strong> ${n}/${d} 的分子和分母都乘以 ${f}，
+      所以 ${n} × ${f} = ${rn}、${d} × ${f} = ${rd}，得到 <strong>${rn}/${rd}</strong>。
+      雖然寫法變了，但代表的大小沒有變！`
+   : `<strong>想一想：</strong> ${n}/${d} 的分子和分母都除以 ${$('factorText').textContent}，
+      得到 <strong>${rn}/${rd}</strong>。分子、分母一起除以相同的公因數，分數大小不變！`;
+
+  const tiles=$('tiles'); tiles.innerHTML='';
+  const count=Math.min(mode==='expand'?rn:n,24);
+  for(let i=0;i<count;i++){
+    const t=document.createElement('span');t.className='tile'+(i<Math.min(mode==='expand'?n:rn,12)?' green':'');
+    if(animated)t.style.animationDelay=(i*35)+'ms'; tiles.appendChild(t);
+  }
+}
+function animate(){
+  ['leftFrac','rightFrac','explain'].forEach((id,i)=>{
+    const el=$(id);el.classList.remove('flash');void el.offsetWidth;
+    el.style.animationDelay=(i*.12)+'s';el.classList.add('flash');
+  });
+  render(true);
+}
+$('expandTab').onclick=()=>{mode='expand';$('expandTab').classList.add('active');$('reduceTab').classList.remove('active');render()}
+$('reduceTab').onclick=()=>{mode='reduce';$('reduceTab').classList.add('active');$('expandTab').classList.remove('active');render()}
+['numRange','denRange','factorRange'].forEach(id=>$(id).oninput=()=>render());
+$('animateBtn').onclick=animate;
+$('resetBtn').onclick=()=>{$('numRange').value=2;$('denRange').value=3;$('factorRange').value=2;mode='expand';$('expandTab').classList.add('active');$('reduceTab').classList.remove('active');render(true)}
+render();
+</script>
+</body>
+</html>
